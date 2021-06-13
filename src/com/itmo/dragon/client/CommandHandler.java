@@ -1,9 +1,6 @@
 package com.itmo.dragon.client;
 
-import com.itmo.dragon.shared.commands.Clear;
-import com.itmo.dragon.shared.commands.Command;
-import com.itmo.dragon.shared.commands.Info;
-import com.itmo.dragon.shared.commands.Show;
+import com.itmo.dragon.shared.commands.*;
 
 import java.io.*;
 import java.util.Map;
@@ -183,7 +180,7 @@ public class CommandHandler() {
     }
 
     private static void clear() throws IOException {
-        Clear clear= new Clear();
+        Clear clear = new Clear();
         clear.setCommand(new Command("Clear"));
         byte[] data = getBytes(clear);
         ClientApp.getCommunication().send(data);
@@ -194,7 +191,7 @@ public class CommandHandler() {
         ObjectOutputStream oos = new ObjectOutputStream(bos);
         oos.writeObject(data);
         oos.flush();
-        return  bos.toByteArray();
+        return bos.toByteArray();
     }
 
     private static void show() throws IOException {
@@ -326,13 +323,12 @@ public class CommandHandler() {
         });
     }
 
-    private static void count_by_character(DragonCharacter dragonCharacter) {
-        AtomicReference<Integer> counter = new AtomicReference<>(0);
-        dragonsHashtable.forEach((k, v) -> {
-            if (v.getCharacter() == dragonCharacter)
-                counter.getAndSet(counter.get() + 1);
-        });
-        System.out.println("\nThere are " + counter.get() + " dragons with this character.");
+    private static void count_by_character(String dragonCharacter) throws IOException {
+        CountByCharacter countByCharacter = new CountByCharacter();
+        countByCharacter.setCommand(new Command("CountByCharacter"));
+        countByCharacter.setCharacter(dragonCharacter);
+        byte[] data = getBytes(countByCharacter);
+        ClientApp.getCommunication().send(data);
     }
 
     private static void update(Long id, Scanner keyboard) {

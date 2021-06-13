@@ -6,13 +6,13 @@ import java.io.Serializable;
 
 public class CountByCharacter implements Serializable {
     Command command;
-    DragonCharacter character;
+    String character;
 
-    public DragonCharacter getCharacter() {
+    public String getCharacter() {
         return character;
     }
 
-    public void setCharacter(DragonCharacter character) {
+    public void setCharacter(String character) {
         this.character = character;
     }
 
