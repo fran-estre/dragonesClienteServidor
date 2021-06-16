@@ -17,6 +17,7 @@ public class ClientApp {
         return communication;
     }
 
+	
     public static void main(String[] args) {
         if (initializeCommunication())
             CommandHandler.handleConsoleCommand();
