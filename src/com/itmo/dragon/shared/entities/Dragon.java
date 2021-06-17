@@ -1,7 +1,9 @@
-package com.itmo.dragon.shared;
+package com.itmo.dragon.shared.entities;
 
 import java.io.Serializable;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Date;
 
 /**
  * Dragon class
@@ -92,6 +94,18 @@ public class Dragon implements Serializable {
         this.killer = killer;
     }
 
-    public Dragon() {
+    public  Dragon(){
+
+    }
+
+    public Dragon(String name, Coordinates coordinates, Long age, Double weight, Boolean speaking, DragonCharacter character, Person killer) {
+        setName(name);
+        setCoordinates(coordinates);
+        setAge(age);
+        setWeight(weight);
+        setSpeaking(speaking);
+        setCharacter(character);
+        setKiller(killer);
+        setCreationDate(new Date().toInstant().atZone(ZoneId.systemDefault()));
     }
 }

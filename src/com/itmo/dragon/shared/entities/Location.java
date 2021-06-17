@@ -1,4 +1,4 @@
-package com.itmo.dragon.shared;
+package com.itmo.dragon.shared.entities;
 
 import java.io.Serializable;
 

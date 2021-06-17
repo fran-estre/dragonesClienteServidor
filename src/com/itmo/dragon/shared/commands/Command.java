@@ -4,9 +4,9 @@ import java.io.Serializable;
 
 public class Command implements Serializable {
     String name;
-    Object dataCommand;
+    DataBox dataCommand;
 
-    public Command(String name, Object dataCommand) {
+    public Command(String name, DataBox dataCommand) {
         this.name = name;
         this.dataCommand = dataCommand;
     }
@@ -19,11 +19,11 @@ public class Command implements Serializable {
         this.name = name;
     }
 
-    public Object getDataCommand() {
+    public DataBox getDataCommand() {
         return dataCommand;
     }
 
-    public void setDataCommand(Object dataCommand) {
+    public void setDataCommand(DataBox dataCommand) {
         this.dataCommand = dataCommand;
     }
 }
