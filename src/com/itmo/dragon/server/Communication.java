@@ -1,4 +1,8 @@
 package com.itmo.dragon.server;
+
+import com.itmo.dragon.shared.commands.Command;
+import com.itmo.dragon.shared.commands.SerializationHandler;
+
 import java.io.IOException;
 import java.net.*;
 
@@ -11,14 +15,25 @@ public class Communication {
         datagramSocket = new DatagramSocket(port);
     }
 
-    public void listen() throws IOException {
-        System.out.println("Server working at" + InetAddress.getLocalHost());
+    public void listen() {
+        try {
+            System.out.println("Server working at" + InetAddress.getLocalHost());
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+            System.out.println("There was an exception while getting local host address " + e.getMessage());
+        }
         while (true) {
             byte[] buffer = new byte[1024];
             DatagramPacket datagramPacket = new DatagramPacket(buffer, buffer.length);
-            datagramSocket.receive(datagramPacket);
-            //to do procesar el datagrama y devolver la respuesta verificando a que cliente debe enviarse la respuesta
-            System.out.println(datagramPacket.getData().toString());
+            try {
+                datagramSocket.receive(datagramPacket);
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("There was an exception while receiving the datagramPacket " + e.getMessage());
+            }
+            Command command = (Command) SerializationHandler.deserialize(datagramPacket.getData());
+            // depending of the command name do what you need to do
+            Process.рrocessCommand(command);
         }
     }
 }

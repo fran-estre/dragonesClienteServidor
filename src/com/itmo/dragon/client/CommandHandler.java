@@ -1,6 +1,7 @@
 package com.itmo.dragon.client;
 
-import com.itmo.dragon.shared.Dragon;
+import com.itmo.dragon.shared.entities.Dragon;
+import com.itmo.dragon.shared.commands.SerializationHandler;
 import com.itmo.dragon.shared.commands.*;
 
 import java.io.*;
@@ -76,8 +77,8 @@ public class CommandHandler {
     }
 
     private static Dragon readDragon() {
-        // TODO : Read dragon from keyboard
-        return null;
+        DragonReader dragonReader = new DragonReader();
+        return dragonReader.read();
     }
 
     private static Object readDataCommandUpdate(String[] parts) {
@@ -159,23 +160,13 @@ public class CommandHandler {
             System.out.println("The command is incomplete, you need to enter the filename that contain the commands.");
             return null;
         }
-        DataBox dataBox = new DataBox();
-        dataBox.setDataFile(parts[1]);
-        return dataBox;
-    }
-
-    private static byte[] getBytes(Object data) {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = null;
-        try {
-            oos = new ObjectOutputStream(bos);
-            oos.writeObject(data);
-            oos.flush();
-            return bos.toByteArray();
-        } catch (IOException e) {
-            e.printStackTrace();
+        FileReader fileReader = new FileReader();
+        String dataFile = fileReader.read(parts[1]);
+        if (dataFile == null)
             return null;
-        }
+        DataBox dataBox = new DataBox();
+        dataBox.setDataFile(dataFile);
+        return dataBox;
     }
 
     private static String sendCommand(String name) {
@@ -183,8 +174,8 @@ public class CommandHandler {
     }
 
     private static String sendCommand(String name, Object dataCommand) {
-        Command help = new Command(name, dataCommand);
-        byte[] data = getBytes(help);
+        Command command = new Command(name, dataCommand);
+        byte[] data = SerializationHandler.serialize(command);
         if (data == null)
             return "Se produjo un error al serializar";
 
@@ -198,3 +189,4 @@ public class CommandHandler {
         }
     }
 }
+
