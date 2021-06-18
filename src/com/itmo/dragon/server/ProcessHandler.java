@@ -1,6 +1,8 @@
 package com.itmo.dragon.server;
 
 import com.itmo.dragon.shared.commands.Command;
+import com.itmo.dragon.shared.commands.DataBox;
+import com.itmo.dragon.shared.commands.DataBoxHandler;
 import com.itmo.dragon.shared.entities.Dragon;
 import com.itmo.dragon.shared.entities.DragonCharacter;
 import com.itmo.dragon.shared.entities.DragonCharacterHelper;
@@ -14,56 +16,25 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class ProcessHandler {
-    public static void processCommand(Command command) {
-        switch (command.getName()) {
-            case "help":
-                help();
-                break;
-            case "info":
-                info();
-                break;
-            case "show":
-                show();
-                break;
-            case "clear":
-                clear();
-            case "save":
-                save();
-                break;
-            case "print_character":
-                printCharacter();
-                break;
-            case "remove_key":
-                remove(command);
-                break;
-            case "execute_script":
-                executeScript(command);
-                break;
-            case "replace_if_greater":
-                replaceIfGreater(command);
-                break;
-            case "replace_if_lower":
-                replaceIfLower(command);
-                break;
-            case "remove_greater_key":
-                remove_greater_key(command);
-                break;
-            case "count_by_character":
-                count_by_character(command);
-                break;
-            case "filter_less_than_killer":
-                filterLessThanKiller(command);
-                break;
-            case "insert":
-                insert(command);
-                break;
-            case "update":
-                update(command);
-                break;
-            default:
-                System.out.println("unknown command");
-                break;
-        }
+    public static String processCommand(Command command) {
+        return switch (command.getName()) {
+            case "help" -> help();
+            case "info" -> info();
+            case "show" -> show();
+            case "clear" -> clear();
+            case "save" -> save();
+            case "print_character" -> printCharacter();
+            case "remove_key" -> remove(command);
+            case "execute_script" -> executeScript(command);
+            case "replace_if_greater" -> replaceIfGreater(command);
+            case "replace_if_lower" -> replaceIfLower(command);
+            case "remove_greater_key" -> remove_greater_key(command);
+            case "count_by_character" -> count_by_character(command);
+            case "filter_less_than_killer" -> filterLessThanKiller(command);
+            case "insert" -> insert(command);
+            case "update" -> update(command);
+            default -> "unknown command";
+        };
     }
 
     private static String executeScript(Command command) {
@@ -74,23 +45,27 @@ public class ProcessHandler {
         }
 
         String line;
-        String output = "";
+        StringBuilder output = new StringBuilder();
 
         while ((line = getLine(dataFile)) != null) {
-            output = output + "\n" + line + "\n";
-            output = output + executeCommand(line);
+            output.append("\n").append(line).append("\n");
+            output.append(executeCommand(line));
         }
-
-        return output;
-
+        return output.toString();
     }
 
-    private static String executeCommand(String line) {
-        return null; // TODO "Working on it ;)";
+    private static String executeCommand(String currentCommand) {
+        String[] parts = currentCommand.split(" ");
+        DataBox dataBox = new DataBox();
+        StringBuilder comments = new StringBuilder();
+        if (DataBoxHandler.getDataBox(parts, dataBox, comments, false))
+            return ProcessHandler.processCommand(new Command(parts[0], dataBox));
+        else
+            return comments.toString();
     }
 
     private static String getLine(StringBuilder dataFile) {
-        String line = null;
+        String line;
         if (dataFile.indexOf("\n") > 0) {
             line = dataFile.substring(0, dataFile.indexOf("\n"));
             dataFile.delete(0, dataFile.indexOf("\n"));
@@ -103,29 +78,29 @@ public class ProcessHandler {
 
     private static String save() {
         Iterator<Map.Entry<Long, Dragon>> it = ServerApp.dragonsHashtable.entrySet().iterator();
-        String dragons = "";
+        StringBuilder dragons = new StringBuilder();
         while (it.hasNext()) {
             Map.Entry<Long, Dragon> currentDragon = it.next();
-            dragons += currentDragon.getValue().toXml();
+            dragons.append(currentDragon.getValue().toXml());
         }
 
-        BufferedWriter writer = null;
+        BufferedWriter writer;
         try {
             writer = new BufferedWriter(new FileWriter(ServerApp.getFileName()));
         } catch (IOException e) {
             e.printStackTrace();
             return "There was a problem while saving";
         }
-        String fileContent = String.format("<?xml version=\"1.0\" encoding=\"UTF-8\" ?><dragons>%s</dragons>", dragons);
-        if (writer != null) {
-            try {
-                writer.write(fileContent);
-                writer.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-                return "There was a problem while saving";
-            }
+        String fileContent = String.format("<?xml version=\"1.0\" encoding=\"UTF-8\" ?><dragons>%s</dragons>", dragons.toString());
+
+        try {
+            writer.write(fileContent);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "There was a problem while saving";
         }
+
         return "The changes was saved";
     }
 
@@ -180,7 +155,7 @@ public class ProcessHandler {
             return "Invalid key value.";
 
         Iterator<Map.Entry<Long, Dragon>> it = ServerApp.dragonsHashtable.entrySet().iterator();
-        Integer deleted = 0;
+        int deleted = 0;
         while (it.hasNext()) {
             Map.Entry<Long, Dragon> entry = it.next();
             if (entry.getKey() > key) {
@@ -239,12 +214,12 @@ public class ProcessHandler {
     private static String printCharacter() {
         StringBuilder dataCharacter = new StringBuilder();
         ServerApp.dragonsHashtable.forEach((k, v) ->
-                dataCharacter.append("\n" + v.getCharacter()));
+                dataCharacter.append("\n").append(v.getCharacter()));
         return dataCharacter.toString();
     }
 
     private static String clear() {
-        ServerApp.dragonsHashtable = new Hashtable<Long, Dragon>();
+        ServerApp.dragonsHashtable = new Hashtable<>();
         return "the collection was cleared";
     }
 
@@ -254,7 +229,7 @@ public class ProcessHandler {
         }
         StringBuilder dataDragon = new StringBuilder();
 
-        ServerApp.dragonsHashtable.forEach((k, v) -> dataDragon.append("\n" + v.toString()));
+        ServerApp.dragonsHashtable.forEach((k, v) -> dataDragon.append("\n").append(v.toString()));
         return dataDragon.toString();
     }
 
