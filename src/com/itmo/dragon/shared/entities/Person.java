@@ -10,7 +10,7 @@ import java.io.Serializable;
  * @author: Francisco Estrella
  * @version: 0.1
  */
-public class Person implements Serializable {
+public class Person implements Comparable<Long>, Serializable {
     private String name; //Поле не может быть null, Строка не может быть пустой
     private Double height; //Поле не может быть null, Значение поля должно быть больше 0
     private long weight; //Значение поля должно быть больше 0
@@ -46,5 +46,18 @@ public class Person implements Serializable {
 
     public void setLocation(Location location) {
         this.location = location;
+    }
+
+    public String toXml() {
+        String nameXml = String.format("<name>%s</name>", getName());
+        String heightXml = String.format("<height>%s</height>", getHeight());
+        String weightXml = String.format("<weight>%s</weight>", getWeight());
+        String locationXml = getLocation().toXml();
+        return String.format("<killer>%s%s%s%s</killer>", nameXml, heightXml, weightXml, locationXml);
+    }
+
+    @Override
+    public int compareTo(Long o) {
+        return (int) (this.getWeight() - o);
     }
 }

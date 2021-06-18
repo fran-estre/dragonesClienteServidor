@@ -18,7 +18,7 @@ public class CommandHandler {
         while ((currentCommand = keyboard.nextLine()) != "exit") {
             String[] parts = currentCommand.split(" ");
             String commandText = parts[0];
-            Object dataCommand;
+            DataBox dataCommand;
             switch (commandText) {
                 case "help":
                 case "info":
@@ -81,7 +81,7 @@ public class CommandHandler {
         return dragonReader.read();
     }
 
-    private static Object readDataCommandUpdate(String[] parts) {
+    private static DataBox readDataCommandUpdate(String[] parts) {
         if (parts.length < 2) {
             System.out.println("The command is incomplete, you need to enter the key.");
             return null;
@@ -91,18 +91,23 @@ public class CommandHandler {
             Long key = Long.parseLong(parts[1]);
             Dragon dragonToUpdate = readDragon();
             dragonToUpdate.setId(key);
-            return dragonToUpdate;
+            DataBox dataBox = new DataBox();
+            dataBox.setDragon(dragonToUpdate);
+            return dataBox;
         } catch (NumberFormatException e) {
             System.out.println("The command is invalid.");
             return null;
         }
     }
 
-    private static Object readDataCommandInsert() {
-        return readDragon();
+    private static DataBox readDataCommandInsert() {
+        Dragon dragonToUpdate = readDragon();
+        DataBox dataBox = new DataBox();
+        dataBox.setDragon(dragonToUpdate);
+        return dataBox;
     }
 
-    private static Object readDataCommandFilterLessThanKiller(String[] parts) {
+    private static DataBox readDataCommandFilterLessThanKiller(String[] parts) {
         if (parts.length < 2) {
             System.out.println("The command is incomplete, you need to enter the killer weight.");
             return null;
@@ -117,7 +122,7 @@ public class CommandHandler {
         }
     }
 
-    private static Object readDataCommandCountByCharacter(String[] parts) {
+    private static DataBox readDataCommandCountByCharacter(String[] parts) {
         if (parts.length < 2) {
             System.out.println("The command is incomplete, you need to enter the character (EVIL, GOOD, CHAOTIC, FICKLE).");
             return null;
@@ -132,7 +137,7 @@ public class CommandHandler {
         return dataBox;
     }
 
-    private static Object readDataCommandKey(String[] parts) {
+    private static DataBox readDataCommandKey(String[] parts) {
         if (parts.length < 3) {
             System.out.println("The command is incomplete, you need to enter the key and the age.");
             return null;
@@ -155,7 +160,7 @@ public class CommandHandler {
         return dataBox;
     }
 
-    private static Object readDataCommandExecuteScript(String[] parts) {
+    private static DataBox readDataCommandExecuteScript(String[] parts) {
         if (parts.length < 2) {
             System.out.println("The command is incomplete, you need to enter the filename that contain the commands.");
             return null;
@@ -173,7 +178,7 @@ public class CommandHandler {
         return sendCommand(name, null);
     }
 
-    private static String sendCommand(String name, Object dataCommand) {
+    private static String sendCommand(String name, DataBox dataCommand) {
         Command command = new Command(name, dataCommand);
         byte[] data = SerializationHandler.serialize(command);
         if (data == null)

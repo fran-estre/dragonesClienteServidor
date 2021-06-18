@@ -33,7 +33,7 @@ public class Communication {
             }
             Command command = (Command) SerializationHandler.deserialize(datagramPacket.getData());
             // depending of the command name do what you need to do
-            Process.рrocessCommand(command);
+            ProcessHandler.processCommand(command);
         }
     }
 }

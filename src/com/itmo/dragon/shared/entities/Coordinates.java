@@ -27,4 +27,11 @@ public class Coordinates implements Serializable {
     public void setY(float y) {
         this.y = y;
     }
+
+    public String toXml() {
+        String xXml = String.format("<x>%s</x>", getX());
+        String yXml = String.format("<y>%s</y>", getY());
+        return String.format("<coordinates>%s%s</coordinates>", xXml, yXml);
+    }
 }
+

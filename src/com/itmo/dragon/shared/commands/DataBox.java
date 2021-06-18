@@ -1,5 +1,7 @@
 package com.itmo.dragon.shared.commands;
 
+import com.itmo.dragon.shared.entities.Dragon;
+
 import java.io.Serializable;
 
 public class DataBox implements Serializable {
@@ -8,6 +10,7 @@ public class DataBox implements Serializable {
     Long age;
     String dragonCharacter;
     String dataFile;
+    Dragon dragon;
 
     public Long getWeight() {
         return weight;
@@ -47,6 +50,14 @@ public class DataBox implements Serializable {
 
     public void setDataFile(String dataFile) {
         this.dataFile = dataFile;
+    }
+
+    public void setDragon(Dragon dragon) {
+        this.dragon = dragon;
+    }
+
+    public Dragon getDragon() {
+        return dragon;
     }
 }
 

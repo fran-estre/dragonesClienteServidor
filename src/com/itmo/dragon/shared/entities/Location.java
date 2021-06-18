@@ -45,4 +45,12 @@ public class Location implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
+
+    public String toXml() {
+        String nameXml = String.format("<name>%s</name>", getName());
+        String xXml = String.format("<x>%s</x>", getX());
+        String yXml = String.format("<y>%s</y>", getY());
+        String zXml = String.format("<z>%s</z>", getZ());
+        return String.format("<location>%s%s%s%s</location>", nameXml, xXml, yXml, zXml);
+    }
 }

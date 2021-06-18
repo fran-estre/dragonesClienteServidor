@@ -95,7 +95,6 @@ public class Dragon implements Serializable {
     }
 
     public  Dragon(){
-
     }
 
     public Dragon(String name, Coordinates coordinates, Long age, Double weight, Boolean speaking, DragonCharacter character, Person killer) {
@@ -107,5 +106,28 @@ public class Dragon implements Serializable {
         setCharacter(character);
         setKiller(killer);
         setCreationDate(new Date().toInstant().atZone(ZoneId.systemDefault()));
+    }
+
+    public String toXml() {
+        String idXml = String.format("<id>%s</id>", getId());
+        String nameXml = String.format("<name>%s</name>", getName());
+        String ageXml = String.format("<age>%s</age>", getAge());
+        String weightXml = String.format("<weight>%s</weight>", getWeight());
+        String creationDateXml = String.format("<creationDate>%s</creationDate>", getCreationDate());
+        String speakingXml = String.format("<speaking>%s</speaking>", getSpeaking());
+        String characterXml = String.format("<character>%s</character>", getCharacter());
+        String coordinatesXml = getCoordinates().toXml();
+        String killerXml = getKiller().toXml();
+        String dragonXml = String.format("<dragon>%s%s%s%s%s%s%s%s%s</dragon>",
+                idXml,
+                nameXml,
+                ageXml,
+                weightXml,
+                creationDateXml,
+                speakingXml,
+                characterXml,
+                coordinatesXml,
+                killerXml);
+        return dragonXml;
     }
 }
