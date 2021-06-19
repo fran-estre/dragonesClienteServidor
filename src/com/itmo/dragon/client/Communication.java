@@ -18,4 +18,16 @@ public class Communication {
         DatagramPacket datagramPacket = new DatagramPacket(command, command.length, serverAddress, port);
         this.datagramSocket.send(datagramPacket);
     }
+
+    public String receive(){
+        byte[] buf = new byte[1024];
+        DatagramPacket datagramPacket = new DatagramPacket(buf, buf.length);
+        try {
+            datagramSocket.receive(datagramPacket);
+            return new String(datagramPacket.getData(), 0, datagramPacket.getLength());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

@@ -19,9 +19,10 @@ public class CommandReader {
             Command command = new Command();
             StringBuilder comments = new StringBuilder();
             if (DataBoxHandler.getDataBox(parts, command, comments, true)) {
-                commandSender.sendCommand(command);
+                String result =  commandSender.sendCommand(command);
+                System.out.println(result);
             } else
-                System.out.println(comments.toString());
+                System.out.println(comments);
             System.out.print("\nEnter the new command: ");
         }
     }

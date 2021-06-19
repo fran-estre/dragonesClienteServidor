@@ -8,66 +8,66 @@ public class DataBoxHandler {
     public static boolean getDataBox(String[] parts, Command command, StringBuilder comments, boolean isInteractive) {
         DataBox dataBox;
         switch (parts[0]) {
-            case "help":
+            case "HELP":
                 command.setCommandType(CommandType.HELP);
                 return true;
-            case "info":
+            case "INFO":
                 command.setCommandType(CommandType.INFO);
                 return true;
-            case "show":
+            case "SHOW":
                 command.setCommandType(CommandType.SHOW);
                 return true;
-            case "clear":
+            case "CLEAR":
                 command.setCommandType(CommandType.CLEAR);
                 return true;
-            case "print_character":
+            case "PRINT_CHARACTER":
                 command.setCommandType(CommandType.PRINT_CHARACTER);
                 return true;
-            case "remove_key":
+            case "REMOVE_KEY":
                 command.setCommandType(CommandType.REMOVE_KEY);
                 dataBox = readDataCommandKey(parts, comments);
                 command.setDataCommand(dataBox);
                 return dataBox != null;
-            case "replace_if_greater":
+            case "REPLACE_IF_GREATER":
                 command.setCommandType(CommandType.REPLACE_IF_GREATER);
                 dataBox = readDataCommandKey(parts, comments);
                 command.setDataCommand(dataBox);
                 return dataBox != null;
-            case "replace_if_lower":
+            case "REPLACE_IF_LOWER":
                 command.setCommandType(CommandType.REPLACE_IF_LOWER);
                 dataBox = readDataCommandKey(parts, comments);
                 command.setDataCommand(dataBox);
                 return dataBox != null;
-            case "remove_greater_key":
+            case "REMOVE_GREATER_KEY":
                 command.setCommandType(CommandType.REMOVE_GREATER_KEY);
                 dataBox = readDataCommandKey(parts, comments);
                 command.setDataCommand(dataBox);
                 return dataBox != null;
-            case "count_by_character":
+            case "COUNT_BY_CHARACTER":
                 command.setCommandType(CommandType.COUNT_BY_CHARACTER);
                 dataBox = readDataCommandCountByCharacter(parts, comments);
                 command.setDataCommand(dataBox);
                 return dataBox != null;
-            case "filter_less_than_killer":
+            case "FILTER_LESS_THAN_KILLER":
                 command.setCommandType(CommandType.FILTER_LESS_THAN_KILLER);
                 dataBox = readDataCommandFilterLessThanKiller(parts, comments);
                 command.setDataCommand(dataBox);
                 return dataBox != null;
-            case "insert":
+            case "INSERT":
                 if (!isInteractive)
                     return false;
                 command.setCommandType(CommandType.INSERT);
                 dataBox = readDataCommandInsert();
                 command.setDataCommand(dataBox);
                 return dataBox != null;
-            case "update":
+            case "UPDATE":
                 if (!isInteractive)
                     return false;
                 command.setCommandType(CommandType.UPDATE);
                 dataBox = readDataCommandUpdate(parts, comments);
                 command.setDataCommand(dataBox);
                 return dataBox != null;
-            case "execute_script":
+            case "EXECUTE_SCRIPT":
                 if (!isInteractive)
                     return false;
                 command.setCommandType(CommandType.EXECUTE_SCRIPT);

@@ -1,9 +1,6 @@
 package com.itmo.dragon.client;
-
 import com.itmo.dragon.shared.commands.Command;
-import com.itmo.dragon.shared.commands.DataBox;
 import com.itmo.dragon.shared.commands.SerializationHandler;
-
 import java.io.IOException;
 
 public class CommandSender {
@@ -12,9 +9,9 @@ public class CommandSender {
         if (data == null)
             return "There was an error while serialization.";
         try {
+            System.out.println("message size: "+data.length+"\n");
             ClientApp.getCommunication().send(data);
-            // TODO :  como obtengo la respuesta
-            return "Ok";
+            return ClientApp.getCommunication().receive();
         } catch (IOException e) {
             e.printStackTrace();
             return "There was an error while sending data.";
