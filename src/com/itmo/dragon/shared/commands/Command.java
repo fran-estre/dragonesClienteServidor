@@ -3,20 +3,16 @@ package com.itmo.dragon.shared.commands;
 import java.io.Serializable;
 
 public class Command implements Serializable {
-    String name;
-    DataBox dataCommand;
+    private DataBox dataCommand;
+    private CommandType commandType;
 
-    public Command(String name, DataBox dataCommand) {
-        this.name = name;
+    public Command() {
+
+    }
+
+    public Command(CommandType commandType, DataBox dataCommand) {
+        this.commandType = commandType;
         this.dataCommand = dataCommand;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public DataBox getDataCommand() {
@@ -25,5 +21,13 @@ public class Command implements Serializable {
 
     public void setDataCommand(DataBox dataCommand) {
         this.dataCommand = dataCommand;
+    }
+
+    public CommandType getCommandType() {
+        return commandType;
+    }
+
+    public void setCommandType(CommandType commandType) {
+        this.commandType = commandType;
     }
 }

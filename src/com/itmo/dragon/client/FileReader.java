@@ -12,8 +12,7 @@ public class FileReader {
             reader = new BufferedReader(new java.io.FileReader(fileName));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            System.out.println("\nCant read the file.");
-            return fileName;
+            return null;
         }
 
         String line;
@@ -23,10 +22,8 @@ public class FileReader {
                 allData = allData + line + "\n";
             }
             return allData;
-
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("\nCant read the file.");
             return null;
         }
     }

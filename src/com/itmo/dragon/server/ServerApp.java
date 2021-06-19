@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.SocketException;
 import java.util.Hashtable;
+import java.util.Scanner;
 
 /**
  * Серверный модуль должен осуществлять выполнение команд по управлению коллекцией.
@@ -14,12 +15,16 @@ import java.util.Hashtable;
  * @version 0.1
  */
 public class ServerApp {
-    public static Hashtable<Long, Dragon> dragonsHashtable = new Hashtable<Long, Dragon>();
-    private static String fileName = "C:\\DragonData.xml";
+    public static Hashtable<Long, Dragon> dragonsHashtable = new Hashtable<>();
+    private static String fileName;
     private static String initialization;
 
     public static String getFileName() {
         return fileName;
+    }
+
+    private static void setFileName(String fileName) {
+        ServerApp.fileName = fileName;
     }
 
     public static String getInitialization() {
@@ -31,21 +36,41 @@ public class ServerApp {
     }
 
     public static void main(String[] args) {
-        if (args.length>0 && isValidFilename(args[0]))
-            fileName = args[0];
+        Integer port;
+        if (args.length != 2) {
+            Scanner scanner = new Scanner(System.in);
+            System.out.print("Enter the port: ");
+            port = Integer.parseInt(scanner.nextLine());
+            System.out.print("Enter the file name: ");
+            setFileName(scanner.nextLine());
+        } else {
+            port = Integer.parseInt(args[0]);
+            setFileName(args[1]);
+        }
+        if (!createIfNotExists(getFileName())) {
+            System.out.println("The file is invalid.");
+            return;
+        }
 
-        Integer port = 7077;
         try {
             Communication communication = new Communication(port);
             communication.listen();
         } catch (SocketException e) {
             e.printStackTrace();
-            System.out.println("There was an unknown exception." + e.getMessage());
+            System.out.println("There was a socket exception." + e.getMessage());
         }
     }
 
-    private static boolean isValidFilename(String filename) {
+    private static boolean createIfNotExists(String filename) {
         File file = new File(filename);
-        return file.exists();
+        if (file.exists())
+            return true;
+
+        try {
+            return file.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

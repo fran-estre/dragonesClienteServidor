@@ -5,41 +5,74 @@ import com.itmo.dragon.client.FileReader;
 import com.itmo.dragon.shared.entities.Dragon;
 
 public class DataBoxHandler {
-    public static boolean getDataBox(String[] parts, DataBox dataBox, StringBuilder comments, boolean isInteractive) {
+    public static boolean getDataBox(String[] parts, Command command, StringBuilder comments, boolean isInteractive) {
+        DataBox dataBox;
         switch (parts[0]) {
             case "help":
+                command.setCommandType(CommandType.HELP);
+                return true;
             case "info":
+                command.setCommandType(CommandType.INFO);
+                return true;
             case "show":
+                command.setCommandType(CommandType.SHOW);
+                return true;
             case "clear":
-            case "save":
+                command.setCommandType(CommandType.CLEAR);
+                return true;
             case "print_character":
+                command.setCommandType(CommandType.PRINT_CHARACTER);
                 return true;
             case "remove_key":
-            case "replace_if_greater":
-            case "replace_if_lower":
-            case "remove_greater_key":
+                command.setCommandType(CommandType.REMOVE_KEY);
                 dataBox = readDataCommandKey(parts, comments);
+                command.setDataCommand(dataBox);
+                return dataBox != null;
+            case "replace_if_greater":
+                command.setCommandType(CommandType.REPLACE_IF_GREATER);
+                dataBox = readDataCommandKey(parts, comments);
+                command.setDataCommand(dataBox);
+                return dataBox != null;
+            case "replace_if_lower":
+                command.setCommandType(CommandType.REPLACE_IF_LOWER);
+                dataBox = readDataCommandKey(parts, comments);
+                command.setDataCommand(dataBox);
+                return dataBox != null;
+            case "remove_greater_key":
+                command.setCommandType(CommandType.REMOVE_GREATER_KEY);
+                dataBox = readDataCommandKey(parts, comments);
+                command.setDataCommand(dataBox);
                 return dataBox != null;
             case "count_by_character":
+                command.setCommandType(CommandType.COUNT_BY_CHARACTER);
                 dataBox = readDataCommandCountByCharacter(parts, comments);
+                command.setDataCommand(dataBox);
                 return dataBox != null;
             case "filter_less_than_killer":
+                command.setCommandType(CommandType.FILTER_LESS_THAN_KILLER);
                 dataBox = readDataCommandFilterLessThanKiller(parts, comments);
+                command.setDataCommand(dataBox);
                 return dataBox != null;
             case "insert":
                 if (!isInteractive)
                     return false;
+                command.setCommandType(CommandType.INSERT);
                 dataBox = readDataCommandInsert();
+                command.setDataCommand(dataBox);
                 return dataBox != null;
             case "update":
                 if (!isInteractive)
                     return false;
+                command.setCommandType(CommandType.UPDATE);
                 dataBox = readDataCommandUpdate(parts, comments);
+                command.setDataCommand(dataBox);
                 return dataBox != null;
             case "execute_script":
                 if (!isInteractive)
                     return false;
+                command.setCommandType(CommandType.EXECUTE_SCRIPT);
                 dataBox = readDataCommandExecuteScript(parts, comments);
+                command.setDataCommand(dataBox);
                 return dataBox != null;
             default:
                 comments.append("unknown command");
@@ -138,8 +171,10 @@ public class DataBoxHandler {
         }
         FileReader fileReader = new FileReader();
         String dataFile = fileReader.read(parts[1]);
-        if (dataFile == null)
+        if (dataFile == null) {
+            comments.append("Can't read the file.");
             return null;
+        }
         DataBox dataBox = new DataBox();
         dataBox.setDataFile(dataFile);
         return dataBox;

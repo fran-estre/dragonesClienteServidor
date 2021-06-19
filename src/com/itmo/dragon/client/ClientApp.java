@@ -17,24 +17,37 @@ public class ClientApp {
         return communication;
     }
 
-	
-    public static void main(String[] args) {
-        if (initializeCommunication())
-            CommandHandler.handleConsoleCommand();
+    private static void setCommunication(Communication communication) {
+        ClientApp.communication = communication;
     }
 
-    private static Boolean initializeCommunication() {
-        String serverAddress = "10.100.80.38";
-        Integer port = 7077;
+    public static void main(String[] args) {
+        String serverAddress;
+        Integer port;
+        if (args.length != 2) {
+            Scanner scanner = new Scanner(System.in);
+            System.out.print("Enter the server address: ");
+            serverAddress = scanner.nextLine();
+            System.out.print("Enter the port: ");
+            port = Integer.parseInt(scanner.nextLine());
+        } else {
+            serverAddress = args[0];
+            port = Integer.parseInt(args[1]);
+        }
+
+        if (initializeCommunication(serverAddress, port))
+            new CommandReader().readConsoleCommand();
+    }
+
+    private static Boolean initializeCommunication(String serverAddress, Integer port) {
         Scanner scanner = new Scanner(System.in);
         do {
             try {
-                communication = new Communication(serverAddress, port);
+                setCommunication(new Communication(serverAddress, port));
                 return true;
             } catch (SocketException e) {
                 e.printStackTrace();
                 System.out.println("There was an exception while connecting to the server. " + e.getMessage());
-
             } catch (UnknownHostException e) {
                 e.printStackTrace();
                 System.out.println("There was an unknown exception. " + e.getMessage());
@@ -44,4 +57,3 @@ public class ClientApp {
         return false;
     }
 }
-

@@ -1,7 +1,6 @@
 package com.itmo.dragon.server;
 
 import com.itmo.dragon.shared.commands.Command;
-import com.itmo.dragon.shared.commands.DataBox;
 import com.itmo.dragon.shared.commands.DataBoxHandler;
 import com.itmo.dragon.shared.entities.Dragon;
 import com.itmo.dragon.shared.entities.DragonCharacter;
@@ -16,28 +15,26 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class ProcessHandler {
-    public static String processCommand(Command command) {
-        return switch (command.getName()) {
-            case "help" -> help();
-            case "info" -> info();
-            case "show" -> show();
-            case "clear" -> clear();
-            case "save" -> save();
-            case "print_character" -> printCharacter();
-            case "remove_key" -> remove(command);
-            case "execute_script" -> executeScript(command);
-            case "replace_if_greater" -> replaceIfGreater(command);
-            case "replace_if_lower" -> replaceIfLower(command);
-            case "remove_greater_key" -> remove_greater_key(command);
-            case "count_by_character" -> count_by_character(command);
-            case "filter_less_than_killer" -> filterLessThanKiller(command);
-            case "insert" -> insert(command);
-            case "update" -> update(command);
-            default -> "unknown command";
+    public String processCommand(Command command) {
+        return switch (command.getCommandType()) {
+            case HELP -> help();
+            case INFO -> info();
+            case SHOW -> show();
+            case CLEAR -> clear();
+            case PRINT_CHARACTER -> printCharacter();
+            case REMOVE_KEY -> remove(command);
+            case EXECUTE_SCRIPT -> executeScript(command);
+            case REPLACE_IF_GREATER -> replaceIfGreater(command);
+            case REPLACE_IF_LOWER -> replaceIfLower(command);
+            case REMOVE_GREATER_KEY -> remove_greater_key(command);
+            case COUNT_BY_CHARACTER -> count_by_character(command);
+            case FILTER_LESS_THAN_KILLER -> filterLessThanKiller(command);
+            case INSERT -> insert(command);
+            case UPDATE -> update(command);
         };
     }
 
-    private static String executeScript(Command command) {
+    private String executeScript(Command command) {
         StringBuilder dataFile = new StringBuilder();
         dataFile.append(command.getDataCommand().getDataFile());
         if (dataFile.length() <= 0) {
@@ -54,17 +51,17 @@ public class ProcessHandler {
         return output.toString();
     }
 
-    private static String executeCommand(String currentCommand) {
+    private String executeCommand(String currentCommand) {
         String[] parts = currentCommand.split(" ");
-        DataBox dataBox = new DataBox();
+        Command command = new Command();
         StringBuilder comments = new StringBuilder();
-        if (DataBoxHandler.getDataBox(parts, dataBox, comments, false))
-            return ProcessHandler.processCommand(new Command(parts[0], dataBox));
+        if (DataBoxHandler.getDataBox(parts, command, comments, false))
+            return this.processCommand(command);
         else
             return comments.toString();
     }
 
-    private static String getLine(StringBuilder dataFile) {
+    private String getLine(StringBuilder dataFile) {
         String line;
         if (dataFile.indexOf("\n") > 0) {
             line = dataFile.substring(0, dataFile.indexOf("\n"));
@@ -76,7 +73,7 @@ public class ProcessHandler {
         return line;
     }
 
-    private static String save() {
+    private String save() {
         Iterator<Map.Entry<Long, Dragon>> it = ServerApp.dragonsHashtable.entrySet().iterator();
         StringBuilder dragons = new StringBuilder();
         while (it.hasNext()) {
@@ -104,12 +101,12 @@ public class ProcessHandler {
         return "The changes was saved";
     }
 
-    private static String insert(Command command) {
+    private String insert(Command command) {
         ServerApp.dragonsHashtable.put(command.getDataCommand().getDragon().getId(), command.getDataCommand().getDragon());
         return "The dragon was inserted.";
     }
 
-    private static String update(Command command) {
+    private String update(Command command) {
         Long key = command.getDataCommand().getKey();
         if (key <= 0)
             return "Invalid key value.";
@@ -121,7 +118,7 @@ public class ProcessHandler {
             return "The dragon don't exists.";
     }
 
-    private static String filterLessThanKiller(Command command) {
+    private String filterLessThanKiller(Command command) {
         Long weight = command.getDataCommand().getWeight();
         if (weight < 0) {
             return "Invalid killer weight.";
@@ -135,7 +132,7 @@ public class ProcessHandler {
         return builder.toString();
     }
 
-    private static String count_by_character(Command command) {
+    private String count_by_character(Command command) {
         String dragonCharacterText = command.getDataCommand().getDragonCharacter();
         DragonCharacter dragonCharacter = DragonCharacterHelper.parseDragonCharacter(dragonCharacterText);
         if (dragonCharacter == null) {
@@ -149,7 +146,7 @@ public class ProcessHandler {
         return "There are " + counter.get() + " dragons with " + dragonCharacterText + " character.";
     }
 
-    private static String remove_greater_key(Command command) {
+    private String remove_greater_key(Command command) {
         Long key = command.getDataCommand().getKey();
         if (key <= 0)
             return "Invalid key value.";
@@ -166,7 +163,7 @@ public class ProcessHandler {
         return "Deleted elements: " + deleted;
     }
 
-    private static String replaceIfLower(Command command) {
+    private String replaceIfLower(Command command) {
         Long key = command.getDataCommand().getKey();
         Long age = command.getDataCommand().getAge();
         if (key <= 0) {
@@ -183,7 +180,7 @@ public class ProcessHandler {
         return "Nothing to replace.";
     }
 
-    private static String replaceIfGreater(Command command) {
+    private String replaceIfGreater(Command command) {
         Long key = command.getDataCommand().getKey();
         Long age = command.getDataCommand().getAge();
         if (key <= 0) {
@@ -200,7 +197,7 @@ public class ProcessHandler {
         return "Nothing to replace.";
     }
 
-    private static String remove(Command command) {
+    private String remove(Command command) {
         Long key = command.getDataCommand().getKey();
         if (key <= 0)
             return "Invalid key value";
@@ -211,19 +208,19 @@ public class ProcessHandler {
             return "The dragon don't exists.";
     }
 
-    private static String printCharacter() {
+    private String printCharacter() {
         StringBuilder dataCharacter = new StringBuilder();
         ServerApp.dragonsHashtable.forEach((k, v) ->
                 dataCharacter.append("\n").append(v.getCharacter()));
         return dataCharacter.toString();
     }
 
-    private static String clear() {
+    private String clear() {
         ServerApp.dragonsHashtable = new Hashtable<>();
         return "the collection was cleared";
     }
 
-    private static String show() {
+    private String show() {
         if (ServerApp.dragonsHashtable.isEmpty()) {
             return "There are no dragons";
         }
@@ -233,13 +230,13 @@ public class ProcessHandler {
         return dataDragon.toString();
     }
 
-    private static String info() {
+    private String info() {
         return "type: Hashtable<Long, Dragon>\n" +
                 "initialization: " + ServerApp.getInitialization() + "\n" +
                 "length: " + ServerApp.dragonsHashtable.size();
     }
 
-    private static String help() {
+    private String help() {
         return "help : вывести справку по доступным командам" +
                 "info : вывести в стандартный поток вывода информацию о коллекции (тип, дата инициализации, количество элементов и т.д.)" +
                 "show : вывести в стандартный поток вывода все элементы коллекции в строковом представлении" +
