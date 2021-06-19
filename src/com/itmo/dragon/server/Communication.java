@@ -30,11 +30,21 @@ public class Communication {
             try {
                 datagramSocket.receive(datagramPacket);
                 Command command = (Command) SerializationHandler.deserialize(datagramPacket.getData());
-                processHandler.processCommand(command);
+                String response = processHandler.processCommand(command);
+                AnswerToClient(datagramPacket, response);
             } catch (IOException e) {
                 e.printStackTrace();
                 System.out.println("There was an exception while receiving the datagramPacket " + e.getMessage());
+                datagramSocket.close();
             }
         }
+    }
+
+    private void AnswerToClient(DatagramPacket datagramPacket, String response) throws IOException {
+        byte[] responseBytes = response.getBytes();
+        InetAddress clientAddress = datagramPacket.getAddress();
+        int clientPort = datagramPacket.getPort();
+        DatagramPacket responsePacket = new DatagramPacket(responseBytes, responseBytes.length, clientAddress, clientPort);
+        datagramSocket.send(responsePacket);
     }
 }
