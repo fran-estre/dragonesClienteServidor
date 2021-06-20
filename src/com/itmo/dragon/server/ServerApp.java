@@ -26,6 +26,7 @@ public class ServerApp {
 
     public static void setExit(Boolean exit) {
         ServerApp.exit = exit;
+        if (exit) System.exit(0);
     }
 
     public static String getFileName() {
@@ -70,7 +71,7 @@ public class ServerApp {
             communication.listen();
         } catch (SocketException e) {
             e.printStackTrace();
-            System.out.println("There was a socket exception." + e.getMessage());
+            System.out.println("There was a socket exception. " + e.getMessage());
         }
     }
 

@@ -1,5 +1,6 @@
 package com.itmo.dragon.client;
 
+import com.itmo.dragon.shared.commands.DataBox;
 import com.itmo.dragon.shared.commands.SerializationHandler;
 import com.itmo.dragon.shared.commands.SizeMessage;
 
@@ -55,8 +56,9 @@ public class Communication {
                 bos.write(datagramPacket.getData());
             }
             buffer = bos.toByteArray();
+            DataBox dataBox = (DataBox) SerializationHandler.deserialize(buffer);
 
-            return new String(buffer, 0, buffer.length);
+            return dataBox.getResponse();
         } catch (IOException e) {
             e.printStackTrace();
             return null;

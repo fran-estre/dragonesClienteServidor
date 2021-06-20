@@ -1,6 +1,7 @@
 package com.itmo.dragon.server;
 
 import com.itmo.dragon.shared.commands.Command;
+import com.itmo.dragon.shared.commands.DataBox;
 import com.itmo.dragon.shared.commands.SerializationHandler;
 import com.itmo.dragon.shared.commands.SizeMessage;
 
@@ -17,10 +18,10 @@ public class Communication {
 
     public void listen() {
         try {
-            System.out.println("Server working at" + InetAddress.getLocalHost());
+            System.out.println("Server working at " + InetAddress.getLocalHost());
         } catch (UnknownHostException e) {
             e.printStackTrace();
-            System.out.println("There was an exception while getting local host address " + e.getMessage());
+            System.out.println("There was an exception while getting local host address. " + e.getMessage());
         }
 
         ProcessHandler processHandler = new ProcessHandler();
@@ -52,7 +53,12 @@ public class Communication {
     }
 
     private void AnswerToClient(InetAddress clientAddress, int clientPort, String response) throws IOException {
-        byte[] responseBytes = response.getBytes();
+        DataBox dataBox = new DataBox();
+        dataBox.setResponse(response);
+        byte[] responseBytes = SerializationHandler.serialize(dataBox);
+        if (responseBytes == null) {
+            throw new InternalError("Size array is 0");
+        }
 
         int repetition = SerializationHandler.getRepetition(responseBytes.length);
         SizeMessage sizeMessage = new SizeMessage();

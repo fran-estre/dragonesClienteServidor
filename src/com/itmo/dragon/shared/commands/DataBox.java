@@ -11,6 +11,7 @@ public class DataBox implements Serializable {
     String dragonCharacter;
     String dataFile;
     Dragon dragon;
+    String response;
 
     public Long getWeight() {
         return weight;
@@ -58,6 +59,14 @@ public class DataBox implements Serializable {
 
     public Dragon getDragon() {
         return dragon;
+    }
+
+    public String getResponse() {
+        return response;
+    }
+
+    public void setResponse(String response) {
+        this.response = response;
     }
 }
 
