@@ -16,12 +16,12 @@ public class FileReader {
         }
 
         String line;
-        String allData = "";
+        StringBuilder allData = new StringBuilder();
         try {
             while ((line = reader.readLine()) != null) {
-                allData = allData + line + "\n";
+                allData.append(line).append("\n");
             }
-            return allData;
+            return allData.toString();
         } catch (IOException e) {
             e.printStackTrace();
             return null;

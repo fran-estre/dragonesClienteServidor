@@ -8,7 +8,7 @@ public class SerializationHandler {
 
     public static byte[] serialize(Object data) {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = null;
+        ObjectOutputStream oos;
         try {
             oos = new ObjectOutputStream(bos);
             oos.writeObject(data);
@@ -25,13 +25,11 @@ public class SerializationHandler {
             return null;
         }
         ByteArrayInputStream b = new ByteArrayInputStream(bytes);
-        ObjectInputStream o = null;
+        ObjectInputStream o;
         try {
             o = new ObjectInputStream(b);
             return (Serializable) o.readObject();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return null;

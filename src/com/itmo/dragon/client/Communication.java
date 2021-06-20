@@ -8,9 +8,9 @@ import java.io.IOException;
 import java.net.*;
 
 public class Communication {
-    private Integer port;
-    private DatagramSocket datagramSocket;
-    private InetAddress serverAddress;
+    private final Integer port;
+    private final DatagramSocket datagramSocket;
+    private final InetAddress serverAddress;
 
     public Communication(String serverAddress, Integer port) throws SocketException, UnknownHostException {
         this.port = port;
@@ -18,11 +18,13 @@ public class Communication {
         this.serverAddress = InetAddress.getByName(serverAddress);
     }
 
-    public void send(byte[] command) throws IOException {
+    public boolean send(byte[] command) throws IOException {
         int repetition = SerializationHandler.getRepetition(command.length);
         SizeMessage sizeMessage = new SizeMessage();
         sizeMessage.Size = command.length;
         byte[] sizeBytes = SerializationHandler.serialize(sizeMessage);
+        if (sizeBytes == null) return false;
+
         DatagramPacket sizePacket = new DatagramPacket(sizeBytes, sizeBytes.length, serverAddress, port);
         this.datagramSocket.send(sizePacket);
 
@@ -35,14 +37,26 @@ public class Communication {
             DatagramPacket datagramPacket = new DatagramPacket(part, part.length, serverAddress, port);
             this.datagramSocket.send(datagramPacket);
         }
+        return true;
     }
 
     public String receive() {
-        byte[] buf = new byte[SerializationHandler.SIZE+SerializationHandler.HEADER];
-        DatagramPacket datagramPacket = new DatagramPacket(buf, buf.length);
+        byte[] buffer = new byte[SerializationHandler.SIZE + SerializationHandler.HEADER];
+        DatagramPacket datagramPacket = new DatagramPacket(buffer, buffer.length);
         try {
             datagramSocket.receive(datagramPacket);
-            return new String(datagramPacket.getData(), 0, datagramPacket.getLength());
+            SizeMessage sizeMessage = (SizeMessage) SerializationHandler.deserialize(datagramPacket.getData());
+            if (sizeMessage.Size <= 0) return "Size message 0";
+
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            int repetition = SerializationHandler.getRepetition(sizeMessage.Size);
+            for (int i = 0; i < repetition; i++) {
+                datagramSocket.receive(datagramPacket);
+                bos.write(datagramPacket.getData());
+            }
+            buffer = bos.toByteArray();
+
+            return new String(buffer, 0, buffer.length);
         } catch (IOException e) {
             e.printStackTrace();
             return null;

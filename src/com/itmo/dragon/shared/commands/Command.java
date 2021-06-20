@@ -10,11 +10,6 @@ public class Command implements Serializable {
 
     }
 
-    public Command(CommandType commandType, DataBox dataCommand) {
-        this.commandType = commandType;
-        this.dataCommand = dataCommand;
-    }
-
     public DataBox getDataCommand() {
         return dataCommand;
     }

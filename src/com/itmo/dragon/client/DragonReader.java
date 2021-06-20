@@ -2,7 +2,6 @@ package com.itmo.dragon.client;
 
 import com.itmo.dragon.shared.entities.*;
 
-import java.util.Locale;
 import java.util.Scanner;
 
 public class DragonReader {
@@ -12,21 +11,21 @@ public class DragonReader {
         do {
             System.out.println("Enter dragon name: ");
             name = keyboard.nextLine();
-            if (name.isEmpty() || name == null) {
+            if (name.isEmpty()) {
                 System.out.println("The name is invalid.");
             }
-        } while (name.isEmpty() || name == null);
+        } while (name.isEmpty());
 
-        Long age;
+        long age;
         do {
             System.out.println("Enter dragon age: ");
             age = readLong(keyboard, "Enter the correct value for the age.");
-            if (age == 0 || age == null) {
+            if (age == 0) {
                 System.out.println("The age is invalid.");
             }
         } while (age <= 0);
 
-        Double weight;
+        double weight;
         do {
             System.out.println("Enter weight: ");
             weight = readDouble(keyboard, "Enter the correct value for the weight.");
@@ -35,10 +34,10 @@ public class DragonReader {
             }
         } while (weight <= 0);
 
-        Boolean speaking = false;
+        boolean speaking = false;
         System.out.println("Enter speaking (y: yes, otherwise no): ");
         String value = keyboard.nextLine();
-        if (value.toLowerCase(Locale.ROOT) == "y") {
+        if (value.equalsIgnoreCase("Y")) {
             speaking = true;
         }
 
@@ -71,23 +70,11 @@ public class DragonReader {
     }
 
     private static Coordinates createCoordinates(Scanner keyboard) {
-        Double x;
-        do {
-            System.out.println("Enter coordinate x: ");
-            x = readDouble(keyboard, "Enter the correct value for the coordinate.");
-            if (x == null) {
-                System.out.println("The coordinate is invalid.");
-            }
-        } while (x == null);
+        System.out.println("Enter coordinate x: ");
+        Double x = readDouble(keyboard, "Enter the correct value for the coordinate.");
 
-        Float y;
-        do {
-            System.out.println("Enter coordinate y: ");
-            y = readFloat(keyboard, "Enter the correct value for the coordinate.");
-            if (y == null) {
-                System.out.println("The coordinate is invalid.");
-            }
-        } while (y == null);
+        System.out.println("Enter coordinate y: ");
+        Float y = readFloat(keyboard, "Enter the correct value for the coordinate.");
 
         Coordinates coordinates = new Coordinates();
         coordinates.setX(x);
@@ -99,24 +86,14 @@ public class DragonReader {
         String value;
         DragonCharacter character = null;
         do {
-            System.out.println("Enter Dragon character (EVIL, GOOD, CHAOTIC, FICKLE): ");
-            value = keyboard.nextLine();
+            System.out.println("Enter dragon character (EVIL, GOOD, CHAOTIC, FICKLE): ");
+            value = keyboard.nextLine().toUpperCase();
             switch (value) {
-                case "EVIL":
-                    character = DragonCharacter.EVIL;
-                    break;
-                case "GOOD":
-                    character = DragonCharacter.GOOD;
-                    break;
-                case "CHAOTIC":
-                    character = DragonCharacter.CHAOTIC;
-                    break;
-                case " FICKLE":
-                    character = DragonCharacter.FICKLE;
-                    break;
-                default:
-                    System.out.println("The character is invalid.");
-                    break;
+                case "EVIL" -> character = DragonCharacter.EVIL;
+                case "GOOD" -> character = DragonCharacter.GOOD;
+                case "CHAOTIC" -> character = DragonCharacter.CHAOTIC;
+                case "FICKLE" -> character = DragonCharacter.FICKLE;
+                default -> System.out.println("The dragon character is invalid.");
             }
         } while (character == null);
         return character;
@@ -127,12 +104,12 @@ public class DragonReader {
         do {
             System.out.println("Enter person name: ");
             personName = keyboard.nextLine();
-            if (personName.isEmpty() || personName == null) {
+            if (personName.isEmpty()) {
                 System.out.println("The person name is invalid.");
             }
-        } while (personName.isEmpty() || personName == null);
+        } while (personName.isEmpty());
 
-        Long personWeight;
+        long personWeight;
         do {
             System.out.println("Enter person weight: ");
             personWeight = readLong(keyboard, "Enter the correct value for the weight.");
@@ -141,7 +118,7 @@ public class DragonReader {
             }
         } while (personWeight <= 0);
 
-        Double height;
+        double height;
         do {
             System.out.println("Enter height: ");
             height = readDouble(keyboard, "Enter the correct value for the height.");
@@ -177,37 +154,19 @@ public class DragonReader {
         do {
             System.out.println("Enter location name: ");
             name = keyboard.nextLine();
-            if (name.isEmpty() || name == null) {
+            if (name.isEmpty()) {
                 System.out.println("The location name is invalid.");
             }
-        } while (name.isEmpty() || name == null);
+        } while (name.isEmpty());
 
-        Double x;
-        do {
-            System.out.println("Enter location x: ");
-            x = readDouble(keyboard, "Enter the correct value for the coordinate.");
-            if (x == null) {
-                System.out.println("The location is invalid.");
-            }
-        } while (x == null);
+        System.out.println("Enter location x: ");
+        Double x = readDouble(keyboard, "Enter the correct value for the coordinate.");
 
-        Double y;
-        do {
-            System.out.println("Enter location y: ");
-            y = readDouble(keyboard, "Enter the correct value for the coordinate.");
-            if (y == null) {
-                System.out.println("The location is invalid.");
-            }
-        } while (y == null);
+        System.out.println("Enter location y: ");
+        Double y = readDouble(keyboard, "Enter the correct value for the coordinate.");
 
-        Float z;
-        do {
-            System.out.println("Enter coordinate z: ");
-            z = readFloat(keyboard, "Enter the correct value for the coordinate.");
-            if (z == null) {
-                System.out.println("The coordinate is invalid.");
-            }
-        } while (z == null);
+        System.out.println("Enter coordinate z: ");
+        Float z = readFloat(keyboard, "Enter the correct value for the coordinate.");
 
         Location location = new Location();
         location.setName(name);
@@ -216,5 +175,4 @@ public class DragonReader {
         location.setZ(z);
         return location;
     }
-
 }

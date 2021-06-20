@@ -8,75 +8,90 @@ public class DataBoxHandler {
     public static boolean getDataBox(String[] parts, Command command, StringBuilder comments, boolean isInteractive) {
         DataBox dataBox;
         switch (parts[0]) {
-            case "HELP":
+            case "HELP" -> {
                 command.setCommandType(CommandType.HELP);
                 return true;
-            case "INFO":
+            }
+            case "INFO" -> {
                 command.setCommandType(CommandType.INFO);
                 return true;
-            case "SHOW":
+            }
+            case "SHOW" -> {
                 command.setCommandType(CommandType.SHOW);
                 return true;
-            case "CLEAR":
+            }
+            case "CLEAR" -> {
                 command.setCommandType(CommandType.CLEAR);
                 return true;
-            case "PRINT_CHARACTER":
+            }
+            case "PRINT_CHARACTER" -> {
                 command.setCommandType(CommandType.PRINT_CHARACTER);
                 return true;
-            case "REMOVE_KEY":
+            }
+            case "REMOVE_KEY" -> {
                 command.setCommandType(CommandType.REMOVE_KEY);
                 dataBox = readDataCommandKey(parts, comments);
                 command.setDataCommand(dataBox);
                 return dataBox != null;
-            case "REPLACE_IF_GREATER":
+            }
+            case "REPLACE_IF_GREATER" -> {
                 command.setCommandType(CommandType.REPLACE_IF_GREATER);
                 dataBox = readDataCommandKey(parts, comments);
                 command.setDataCommand(dataBox);
                 return dataBox != null;
-            case "REPLACE_IF_LOWER":
+            }
+            case "REPLACE_IF_LOWER" -> {
                 command.setCommandType(CommandType.REPLACE_IF_LOWER);
                 dataBox = readDataCommandKey(parts, comments);
                 command.setDataCommand(dataBox);
                 return dataBox != null;
-            case "REMOVE_GREATER_KEY":
+            }
+            case "REMOVE_GREATER_KEY" -> {
                 command.setCommandType(CommandType.REMOVE_GREATER_KEY);
                 dataBox = readDataCommandKey(parts, comments);
                 command.setDataCommand(dataBox);
                 return dataBox != null;
-            case "COUNT_BY_CHARACTER":
+            }
+            case "COUNT_BY_CHARACTER" -> {
                 command.setCommandType(CommandType.COUNT_BY_CHARACTER);
                 dataBox = readDataCommandCountByCharacter(parts, comments);
                 command.setDataCommand(dataBox);
                 return dataBox != null;
-            case "FILTER_LESS_THAN_KILLER":
+            }
+            case "FILTER_LESS_THAN_KILLER" -> {
                 command.setCommandType(CommandType.FILTER_LESS_THAN_KILLER);
                 dataBox = readDataCommandFilterLessThanKiller(parts, comments);
                 command.setDataCommand(dataBox);
                 return dataBox != null;
-            case "INSERT":
+            }
+            case "INSERT" -> {
                 if (!isInteractive)
                     return false;
                 command.setCommandType(CommandType.INSERT);
                 dataBox = readDataCommandInsert();
                 command.setDataCommand(dataBox);
                 return dataBox != null;
-            case "UPDATE":
+            }
+            case "UPDATE" -> {
                 if (!isInteractive)
                     return false;
                 command.setCommandType(CommandType.UPDATE);
                 dataBox = readDataCommandUpdate(parts, comments);
                 command.setDataCommand(dataBox);
                 return dataBox != null;
-            case "EXECUTE_SCRIPT":
+            }
+            case "EXECUTE_SCRIPT" -> {
                 if (!isInteractive)
                     return false;
                 command.setCommandType(CommandType.EXECUTE_SCRIPT);
                 dataBox = readDataCommandExecuteScript(parts, comments);
                 command.setDataCommand(dataBox);
                 return dataBox != null;
-            default:
+            }
+            default -> {
                 comments.append("unknown command");
                 return false;
+            }
         }
     }
 

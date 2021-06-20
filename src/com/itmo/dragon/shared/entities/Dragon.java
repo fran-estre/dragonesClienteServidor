@@ -94,9 +94,6 @@ public class Dragon implements Serializable {
         this.killer = killer;
     }
 
-    public  Dragon(){
-    }
-
     public Dragon(String name, Coordinates coordinates, Long age, Double weight, Boolean speaking, DragonCharacter character, Person killer) {
         setName(name);
         setCoordinates(coordinates);
@@ -118,7 +115,7 @@ public class Dragon implements Serializable {
         String characterXml = String.format("<character>%s</character>", getCharacter());
         String coordinatesXml = getCoordinates().toXml();
         String killerXml = getKiller().toXml();
-        String dragonXml = String.format("<dragon>%s%s%s%s%s%s%s%s%s</dragon>",
+        return String.format("<dragon>%s%s%s%s%s%s%s%s%s</dragon>",
                 idXml,
                 nameXml,
                 ageXml,
@@ -128,6 +125,5 @@ public class Dragon implements Serializable {
                 characterXml,
                 coordinatesXml,
                 killerXml);
-        return dragonXml;
     }
 }

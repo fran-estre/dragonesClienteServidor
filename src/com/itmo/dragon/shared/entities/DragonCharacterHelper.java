@@ -2,18 +2,13 @@ package com.itmo.dragon.shared.entities;
 
 public class DragonCharacterHelper {
     public static DragonCharacter parseDragonCharacter(String character) {
-        switch (character) {
-            case "CHAOTIC":
-                return DragonCharacter.CHAOTIC;
-            case "EVIL":
-                return DragonCharacter.EVIL;
-            case "FICKLE":
-                return DragonCharacter.FICKLE;
-            case "GOOD":
-                return DragonCharacter.GOOD;
-            default:
-                return null;
-        }
+        return switch (character) {
+            case "CHAOTIC" -> DragonCharacter.CHAOTIC;
+            case "EVIL" -> DragonCharacter.EVIL;
+            case "FICKLE" -> DragonCharacter.FICKLE;
+            case "GOOD" -> DragonCharacter.GOOD;
+            default -> null;
+        };
     }
 
 }

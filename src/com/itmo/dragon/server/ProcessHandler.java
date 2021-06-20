@@ -73,7 +73,7 @@ public class ProcessHandler {
         return line;
     }
 
-    private String save() {
+    public String save() {
         Iterator<Map.Entry<Long, Dragon>> it = ServerApp.dragonsHashtable.entrySet().iterator();
         StringBuilder dragons = new StringBuilder();
         while (it.hasNext()) {
@@ -88,7 +88,7 @@ public class ProcessHandler {
             e.printStackTrace();
             return "There was a problem while saving";
         }
-        String fileContent = String.format("<?xml version=\"1.0\" encoding=\"UTF-8\" ?><dragons>%s</dragons>", dragons.toString());
+        String fileContent = String.format("<?xml version=\"1.0\" encoding=\"UTF-8\" ?><dragons>%s</dragons>", dragons);
 
         try {
             writer.write(fileContent);

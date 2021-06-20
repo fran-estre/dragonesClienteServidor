@@ -53,7 +53,7 @@ public class ClientApp {
                 System.out.println("There was an unknown exception. " + e.getMessage());
             }
             System.out.println("Would you like to try again (yes/no)?");
-        } while (scanner.nextLine().toUpperCase().equals("YES"));
+        } while (scanner.nextLine().equalsIgnoreCase("YES"));
         return false;
     }
 }

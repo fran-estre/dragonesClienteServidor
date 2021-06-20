@@ -24,7 +24,7 @@ public class DataBox implements Serializable {
         return key;
     }
 
-    public void setKey(Long weight) {
+    public void setKey(Long key) {
         this.key = key;
     }
 

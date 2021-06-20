@@ -12,5 +12,5 @@ public enum DragonCharacter implements Serializable {
     EVIL,
     GOOD,
     CHAOTIC,
-    FICKLE;
+    FICKLE
 }

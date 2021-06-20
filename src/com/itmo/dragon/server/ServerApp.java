@@ -18,6 +18,15 @@ public class ServerApp {
     public static Hashtable<Long, Dragon> dragonsHashtable = new Hashtable<>();
     private static String fileName;
     private static String initialization;
+    private static Boolean exit = false;
+
+    public static Boolean getExit() {
+        return exit;
+    }
+
+    public static void setExit(Boolean exit) {
+        ServerApp.exit = exit;
+    }
 
     public static String getFileName() {
         return fileName;
@@ -36,7 +45,7 @@ public class ServerApp {
     }
 
     public static void main(String[] args) {
-        Integer port;
+        int port;
         if (args.length != 2) {
             Scanner scanner = new Scanner(System.in);
             System.out.print("Enter the port: ");
@@ -53,6 +62,10 @@ public class ServerApp {
         }
 
         try {
+            KeyboardHandler keyboardHandler = new KeyboardHandler();
+            Thread t1 = new Thread(keyboardHandler);
+            t1.start();
+
             Communication communication = new Communication(port);
             communication.listen();
         } catch (SocketException e) {

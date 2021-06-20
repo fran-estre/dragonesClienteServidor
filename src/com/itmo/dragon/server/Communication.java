@@ -9,11 +9,9 @@ import java.io.IOException;
 import java.net.*;
 
 public class Communication {
-    private Integer port;
-    private DatagramSocket datagramSocket;
+    private final DatagramSocket datagramSocket;
 
     public Communication(Integer port) throws SocketException {
-        this.port = port;
         datagramSocket = new DatagramSocket(port);
     }
 
@@ -26,8 +24,8 @@ public class Communication {
         }
 
         ProcessHandler processHandler = new ProcessHandler();
-        while (true) {
-            byte[] buffer = new byte[SerializationHandler.SIZE+SerializationHandler.HEADER];
+        while (!ServerApp.getExit()) {
+            byte[] buffer = new byte[SerializationHandler.SIZE + SerializationHandler.HEADER];
             DatagramPacket datagramPacket = new DatagramPacket(buffer, buffer.length);
             try {
                 datagramSocket.receive(datagramPacket);
@@ -44,7 +42,7 @@ public class Communication {
 
                 Command command = (Command) SerializationHandler.deserialize(buffer);
                 String response = processHandler.processCommand(command);
-                AnswerToClient(datagramPacket, response);
+                AnswerToClient(datagramPacket.getAddress(), datagramPacket.getPort(), response);
             } catch (IOException e) {
                 e.printStackTrace();
                 System.out.println("There was an exception while receiving the datagramPacket " + e.getMessage());
@@ -53,11 +51,28 @@ public class Communication {
         }
     }
 
-    private void AnswerToClient(DatagramPacket datagramPacket, String response) throws IOException {
+    private void AnswerToClient(InetAddress clientAddress, int clientPort, String response) throws IOException {
         byte[] responseBytes = response.getBytes();
-        InetAddress clientAddress = datagramPacket.getAddress();
-        int clientPort = datagramPacket.getPort();
-        DatagramPacket responsePacket = new DatagramPacket(responseBytes, responseBytes.length, clientAddress, clientPort);
-        datagramSocket.send(responsePacket);
+
+        int repetition = SerializationHandler.getRepetition(responseBytes.length);
+        SizeMessage sizeMessage = new SizeMessage();
+        sizeMessage.Size = responseBytes.length;
+        byte[] sizeBytes = SerializationHandler.serialize(sizeMessage);
+        if (sizeBytes == null) {
+            throw new InternalError("Size array is 0");
+        }
+
+        DatagramPacket sizePacket = new DatagramPacket(sizeBytes, sizeBytes.length, clientAddress, clientPort);
+        this.datagramSocket.send(sizePacket);
+
+        int offset = 0;
+        for (int i = 0; i < repetition; i++) {
+            int partSize = SerializationHandler.SIZE * (i + 1) < responseBytes.length ? SerializationHandler.SIZE : responseBytes.length - SerializationHandler.SIZE * i;
+            byte[] part = new byte[partSize];
+            System.arraycopy(responseBytes, offset, part, 0, partSize);
+            offset = offset + SerializationHandler.SIZE;
+            DatagramPacket responsePacket = new DatagramPacket(part, part.length, clientAddress, clientPort);
+            this.datagramSocket.send(responsePacket);
+        }
     }
 }

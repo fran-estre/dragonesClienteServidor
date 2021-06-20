@@ -10,8 +10,9 @@ public class CommandSender {
             return "There was an error while serialization.";
         try {
             System.out.println("message size: "+data.length+"\n");
-            ClientApp.getCommunication().send(data);
-            return ClientApp.getCommunication().receive();
+            if(ClientApp.getCommunication().send(data))
+                return ClientApp.getCommunication().receive();
+            return "The command was not sent";
         } catch (IOException e) {
             e.printStackTrace();
             return "There was an error while sending data.";

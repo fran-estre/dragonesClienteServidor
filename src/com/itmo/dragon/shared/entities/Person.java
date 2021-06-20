@@ -1,7 +1,5 @@
 package com.itmo.dragon.shared.entities;
 
-import com.itmo.dragon.shared.entities.Location;
-
 import java.io.Serializable;
 
 /**
