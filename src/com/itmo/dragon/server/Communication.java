@@ -2,11 +2,15 @@ package com.itmo.dragon.server;
 
 import com.itmo.dragon.shared.commands.Command;
 import com.itmo.dragon.shared.commands.SerializationHandler;
+import com.itmo.dragon.shared.commands.SizeMessage;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.*;
 
 public class Communication {
+    static final int SIZE = 512;
+    static final int HEADER = 128; // I guess
     private Integer port;
     private DatagramSocket datagramSocket;
 
@@ -25,11 +29,22 @@ public class Communication {
 
         ProcessHandler processHandler = new ProcessHandler();
         while (true) {
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[SIZE+HEADER];
             DatagramPacket datagramPacket = new DatagramPacket(buffer, buffer.length);
             try {
                 datagramSocket.receive(datagramPacket);
-                Command command = (Command) SerializationHandler.deserialize(datagramPacket.getData());
+                SizeMessage sizeMessage = (SizeMessage) SerializationHandler.deserialize(datagramPacket.getData());
+                if (sizeMessage.Size <= 0) continue;
+
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                int repetition = getRepetition(sizeMessage);
+                for (int i = 0; i < repetition; i++) {
+                    datagramSocket.receive(datagramPacket);
+                    bos.write(datagramPacket.getData());
+                }
+                buffer = bos.toByteArray();
+
+                Command command = (Command) SerializationHandler.deserialize(buffer);
                 String response = processHandler.processCommand(command);
                 AnswerToClient(datagramPacket, response);
             } catch (IOException e) {
@@ -38,6 +53,13 @@ public class Communication {
                 datagramSocket.close();
             }
         }
+    }
+
+    private int getRepetition(SizeMessage sizeMessage) {
+        int residue = sizeMessage.Size % SIZE;
+        int division = (sizeMessage.Size - residue) / SIZE;
+
+        return residue == 0 ? division : division + 1;
     }
 
     private void AnswerToClient(DatagramPacket datagramPacket, String response) throws IOException {
