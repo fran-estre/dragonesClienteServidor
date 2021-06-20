@@ -53,7 +53,8 @@ public class Communication {
             int repetition = SerializationHandler.getRepetition(sizeMessage.Size);
             for (int i = 0; i < repetition; i++) {
                 datagramSocket.receive(datagramPacket);
-                bos.write(datagramPacket.getData());
+                int partSize = SerializationHandler.SIZE * (i + 1) < sizeMessage.Size ? SerializationHandler.SIZE : sizeMessage.Size - SerializationHandler.SIZE * i;
+                bos.write(datagramPacket.getData(),0,partSize);
             }
             buffer = bos.toByteArray();
             DataBox dataBox = (DataBox) SerializationHandler.deserialize(buffer);
