@@ -23,7 +23,7 @@ public class ClientApp {
 
     public static void main(String[] args) {
         String serverAddress;
-        Integer port;
+        int port;
         if (args.length != 2) {
             Scanner scanner = new Scanner(System.in);
             System.out.print("Enter the server address: ");
@@ -53,7 +53,7 @@ public class ClientApp {
                 System.out.println("There was an unknown exception. " + e.getMessage());
             }
             System.out.println("Would you like to try again (yes/no)?");
-        } while (scanner.nextLine() == "yes");
+        } while (scanner.nextLine().toUpperCase().equals("YES"));
         return false;
     }
 }
