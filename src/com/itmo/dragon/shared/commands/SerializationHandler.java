@@ -3,6 +3,9 @@ package com.itmo.dragon.shared.commands;
 import java.io.*;
 
 public class SerializationHandler {
+    public static final int SIZE = 512;
+    public static final int HEADER = 128; // I guess
+
     public static byte[] serialize(Object data) {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         ObjectOutputStream oos = null;
@@ -32,5 +35,12 @@ public class SerializationHandler {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static int getRepetition(int size) {
+        int residue = size % SIZE;
+        int division = (size - residue) / SIZE;
+
+        return residue == 0 ? division : division + 1;
     }
 }

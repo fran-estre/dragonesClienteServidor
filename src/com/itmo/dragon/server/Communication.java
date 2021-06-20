@@ -9,8 +9,6 @@ import java.io.IOException;
 import java.net.*;
 
 public class Communication {
-    static final int SIZE = 512;
-    static final int HEADER = 128; // I guess
     private Integer port;
     private DatagramSocket datagramSocket;
 
@@ -29,7 +27,7 @@ public class Communication {
 
         ProcessHandler processHandler = new ProcessHandler();
         while (true) {
-            byte[] buffer = new byte[SIZE+HEADER];
+            byte[] buffer = new byte[SerializationHandler.SIZE+SerializationHandler.HEADER];
             DatagramPacket datagramPacket = new DatagramPacket(buffer, buffer.length);
             try {
                 datagramSocket.receive(datagramPacket);
@@ -37,7 +35,7 @@ public class Communication {
                 if (sizeMessage.Size <= 0) continue;
 
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                int repetition = getRepetition(sizeMessage);
+                int repetition = SerializationHandler.getRepetition(sizeMessage.Size);
                 for (int i = 0; i < repetition; i++) {
                     datagramSocket.receive(datagramPacket);
                     bos.write(datagramPacket.getData());
@@ -53,13 +51,6 @@ public class Communication {
                 datagramSocket.close();
             }
         }
-    }
-
-    private int getRepetition(SizeMessage sizeMessage) {
-        int residue = sizeMessage.Size % SIZE;
-        int division = (sizeMessage.Size - residue) / SIZE;
-
-        return residue == 0 ? division : division + 1;
     }
 
     private void AnswerToClient(DatagramPacket datagramPacket, String response) throws IOException {
