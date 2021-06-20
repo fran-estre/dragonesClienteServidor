@@ -44,7 +44,7 @@ public class ProcessHandler {
         String line;
         StringBuilder output = new StringBuilder();
 
-        while ((line = getLine(dataFile)) != null) {
+        while (!(line = getLine(dataFile)).isEmpty()) {
             output.append("\n").append(line).append("\n");
             output.append(executeCommand(line));
         }
@@ -52,7 +52,7 @@ public class ProcessHandler {
     }
 
     private String executeCommand(String currentCommand) {
-        String[] parts = currentCommand.split(" ");
+        String[] parts = currentCommand.toUpperCase().split(" ");
         Command command = new Command();
         StringBuilder comments = new StringBuilder();
         if (DataBoxHandler.getDataBox(parts, command, comments, false))
@@ -65,7 +65,7 @@ public class ProcessHandler {
         String line;
         if (dataFile.indexOf("\n") > 0) {
             line = dataFile.substring(0, dataFile.indexOf("\n"));
-            dataFile.delete(0, dataFile.indexOf("\n"));
+            dataFile.delete(0, dataFile.indexOf("\n") + 1);
         } else {
             line = dataFile.toString();
             dataFile.setLength(0);
@@ -226,7 +226,7 @@ public class ProcessHandler {
         }
         StringBuilder dataDragon = new StringBuilder();
 
-        ServerApp.dragonsHashtable.forEach((k, v) -> dataDragon.append("\n").append(v.toString()));
+        ServerApp.dragonsHashtable.forEach((k, v) -> dataDragon.append("\n").append(v.toXml()));
         return dataDragon.toString();
     }
 
