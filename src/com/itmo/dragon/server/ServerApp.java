@@ -44,7 +44,6 @@ public class ServerApp {
     public static void setInitialization(String initialization) {
         ServerApp.initialization = initialization;
     }
-
     public static void main(String[] args) {
         int port;
         if (args.length != 2) {

@@ -105,6 +105,10 @@ public class Dragon implements Serializable {
         setCreationDate(new Date().toInstant().atZone(ZoneId.systemDefault()));
     }
 
+    public String toString() {
+        return String.format("id: %s, name: %s", getId(), getName());
+    }
+
     public String toXml() {
         String idXml = String.format("<id>%s</id>", getId());
         String nameXml = String.format("<name>%s</name>", getName());
